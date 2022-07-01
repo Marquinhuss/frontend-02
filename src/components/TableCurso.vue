@@ -4,9 +4,8 @@
       <table cellpadding="0" cellspacing="0" border="0">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Course</th>
-            <th>Rating</th>
+            <th>Curso</th>
+            <th>Carga Horária</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -15,13 +14,12 @@
     <div class="tbl-content">
       <table cellpadding="0" cellspacing="0" border="0">
         <tbody>
-          <tr v-for="student in dataset" :key="student.id">
-            <td>{{student.name}}</td>
-            <td>{{student.course}}</td>
-            <td>{{student.rating}}</td>
+          <tr v-for="curso in dataset" :key="curso.id">
+            <td>{{curso.nome_curso}}</td>
+            <td>{{curso.ch_curso}}</td>
             <td>
-              <button class="editButton" @click="tableEditClick(student)">Edit</button>
-              <button class="deleteButton" @click="tableRemoveClick(student)">Delete</button>
+              <button class="editButton" @click="tableEditClick(curso)">Edit</button>
+              <button class="deleteButton" @click="tableRemoveClick(PaginaCurso)">Delete</button>
             </td>
           </tr>
         </tbody>
