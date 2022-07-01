@@ -19,7 +19,7 @@
             <td>{{curso.ch_curso}}</td>
             <td>
               <button class="editButton" @click="tableEditClick(curso)">Edit</button>
-              <button class="deleteButton" @click="tableRemoveClick(PaginaCurso)">Delete</button>
+              <button class="deleteButton" @click="tableRemoveClick(curso)">Delete</button>
             </td>
           </tr>
         </tbody>
