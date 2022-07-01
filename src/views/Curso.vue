@@ -7,28 +7,27 @@
       </div>
       <div>
         <form>
-          <input v-model="formData.name" placeholder="Student Name"/>
-          <input v-model="formData.course" placeholder="Course"/>
-          <input v-model="formData.rating" placeholder="Rating"/>
+          <input v-model="formData.nome_curso" placeholder="Nome do Curso"/>
+          <input v-model="formData.ch_curso" placeholder="Carga Horária"/>
           <button 
           v-if="!editMode"
-          @click.prevent="addStudent()"
-          :disabled="!formData.name || !formData.course || !formData.rating"
+          @click.prevent="addCurso()"
+          :disabled="!formData.nome_curso || !formData.ch_curso"
           >Add</button>
           <button
           v-if="!editMode"
           @click.prevent="reset"
-          :disabled="!formData.name && !formData.course && !formData.rating"
+          :disabled="!formData.nome_curso && !formData.ch_curso"
           class="resetButton"
           >
           Reset
           </button>
-          <button v-if="editMode" @click.prevent="saveModifiedStudent">Save</button>
+          <button v-if="editMode" @click.prevent="saveModifiedCurso">Save</button>
           <button v-if="editMode" class="resetButton" @click.prevent="cancel">Cancel</button>
         </form>
       </div>
       <div>
-        <TableComponent :dataset="dataset" @tableEditClick="editStudent" @tableRemoveClick="deleteStudent"/>
+        <TableComponent :dataset="dataset" @tableEditClick="editCurso" @tableRemoveClick="deleteCurso"/>
       </div>
     </section>
   </div>
@@ -37,7 +36,7 @@
 <script>
 import { ref } from '@vue/reactivity';
 import TableComponent from '../components/TableCurso.vue';
-import Services from "../services/services"
+import Services from "../services/servicescurso"
 
 export default {
   name: "PaginaCurso",
@@ -49,7 +48,7 @@ export default {
 
     async function loadDataBase(){
       try{
-        let req = await Services.getStudents()
+        let req = await Services.getCursos()
         if (req){
           dataset.value = req
           cancel()
@@ -62,13 +61,12 @@ export default {
 
     loadDataBase()
 
-    const formData = ref({id: "", name: "", course: "", rating: ""})
+    const formData = ref({id: "", nome_curso: "", ch_curso: ""})
     const editMode = ref(false)
 
     function reset(){
-      formData.value.name = ""
-      formData.value.course = ""
-      formData.value.rating = ""
+      formData.value.nome_curso = ""
+      formData.value.ch_curso = ""
       formData.value.id = ""
     }
 
@@ -77,10 +75,10 @@ export default {
       editMode.value = false
     }
 
-    async function addStudent(){
+    async function addCurso(){
       console.log("clicou para adicionar")
       try{
-        let req = await Services.addStudent(formData.value.name,formData.value.course,formData.value.rating)
+        let req = await Services.addCurso(formData.value.nome_curso,formData.value.ch_curso)
         if(req){
           await loadDataBase()
           editMode.value = false
@@ -88,21 +86,20 @@ export default {
       }catch(error){console.log(error)}
     }
 
-    function editStudent(student){
+    function editCurso(curso){
+      console.log("editar", curso)
       editMode.value = true
-      formData.value.name = student.name
-      formData.value.course = student.course
-      formData.value.rating = student.rating
-      formData.value.id = student.id
+      formData.value.nome_curso = curso.nome_curso
+      formData.value.ch_curso = curso.ch_curso
+      formData.value.id = curso.id
     }
 
-    async function saveModifiedStudent(){
+    async function saveModifiedCurso(){
       try{
-        let req = await Services.editStudent(
+        let req = await Services.editCurso(
           formData.value.id,
-          formData.value.name,
-          formData.value.course,
-          formData.value.rating
+          formData.value.nome_curso,
+          formData.value.ch_curso
         )
         if(req) await loadDataBase()
 
@@ -111,9 +108,10 @@ export default {
       }
     }
 
-    async function deleteStudent(student){
+    async function deleteCurso(student){
+      console.log("deletar", student)
       try{
-        await Services.deleteStudent(student.id)
+        await Services.deleteCurso(student.id)
       }catch(error){
         console.log(error)
       }
@@ -126,10 +124,10 @@ export default {
       editMode,
       reset,
       cancel,
-      addStudent,
-      editStudent,
-      saveModifiedStudent,
-      deleteStudent
+      addCurso,
+      editCurso,
+      saveModifiedCurso,
+      deleteCurso
     }
   },
 };
