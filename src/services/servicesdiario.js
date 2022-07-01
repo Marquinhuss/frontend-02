@@ -6,32 +6,33 @@ const http = axios.create({
 
 
 export default {
-    async getStudents(){
-        let ret = await http.get("api/students/")
+    async getDiario(){
+        let ret = await http.get("api/diario/")
         return ret.data
     },
 
-    async addStudent(name,course,rating){
-        let ret = await http.post("api/students/",{
-            name: name,
-            course: course,
-            rating: rating,
-            matricula: "1"
+    async addDiario(turma,nota,aluno,curso){
+        let ret = await http.post("api/diario/",{
+            nome_turma : turma,
+            nota_aluno: nota,
+            student: aluno,
+            curso: curso
         })
         return ret.data
     },
 
-    async editStudent(id, name, course, rating){
-        let ret = await http.put(`api/students/${id}/`, {
-            name: name,
-            course: course,
-            rating: rating
+    async editDiario(turma,nota,aluno,curso,id){
+        let ret = await http.put(`api/diario/${id}/`, {
+            nome_turma : turma,
+            nota_aluno: nota,
+            student: aluno,
+            curso: curso
         })
         return ret.data
     },
 
-    async deleteStudent(id){
-        let ret = await http.delete(`api/students/${id}`)
+    async deleteDiario(id){
+        let ret = await http.delete(`api/diario/${id}`)
         return ret.data
     }
 

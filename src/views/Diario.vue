@@ -7,28 +7,29 @@
       </div>
       <div>
         <form>
-          <input v-model="formData.name" placeholder="Student Name"/>
-          <input v-model="formData.course" placeholder="Course"/>
-          <input v-model="formData.rating" placeholder="Rating"/>
+          <input v-model="formData.nome_turma" placeholder="Turma"/>
+          <input v-model="formData.nota_aluno" placeholder="Nota"/>
+          <input v-model="formData.nota_aluno" placeholder="Aluno"/>
+          <input v-model="formData.nota_aluno" placeholder="Curso"/>
           <button 
           v-if="!editMode"
-          @click.prevent="addStudent()"
-          :disabled="!formData.name || !formData.course || !formData.rating"
+          @click.prevent="addDiario()"
+          :disabled="!formData.nome_turma || !formData.nota_aluno || !formData.student || !formData.curso"
           >Add</button>
           <button
           v-if="!editMode"
           @click.prevent="reset"
-          :disabled="!formData.name && !formData.course && !formData.rating"
+          :disabled="!formData.nome_curso && !formData.nota_aluno && !formData.student && !formData.curso"
           class="resetButton"
           >
           Reset
           </button>
-          <button v-if="editMode" @click.prevent="saveModifiedStudent">Save</button>
+          <button v-if="editMode" @click.prevent="saveModifiedDiario">Save</button>
           <button v-if="editMode" class="resetButton" @click.prevent="cancel">Cancel</button>
         </form>
       </div>
       <div>
-        <TableComponent :dataset="dataset" @tableEditClick="editStudent" @tableRemoveClick="deleteStudent"/>
+        <TableComponent :dataset="dataset" @tableEditClick="editDiario" @tableRemoveClick="deleteDiario"/>
       </div>
     </section>
   </div>
@@ -37,7 +38,7 @@
 <script>
 import { ref } from '@vue/reactivity';
 import TableComponent from '../components/TableDiario.vue';
-import Services from "../services/services"
+import Services from "../services/servicesdiario"
 
 export default {
   name: "PaginaDiario",
@@ -49,7 +50,7 @@ export default {
 
     async function loadDataBase(){
       try{
-        let req = await Services.getStudents()
+        let req = await Services.getDiario()
         if (req){
           dataset.value = req
           cancel()
@@ -62,14 +63,15 @@ export default {
 
     loadDataBase()
 
-    const formData = ref({id: "", name: "", course: "", rating: ""})
+    const formData = ref({id: "", nome_turma: "", nota_aluno: "",student:"",curso:""})
     const editMode = ref(false)
 
     function reset(){
-      formData.value.name = ""
-      formData.value.course = ""
-      formData.value.rating = ""
-      formData.value.id = ""
+      formData.value.nome_turma = ""
+      formData.value.nota_aluno = ""
+      formData.value.student = ""
+      formData.value.curso = ""
+      formData.value.id=""
     }
 
     function cancel(){
@@ -77,10 +79,10 @@ export default {
       editMode.value = false
     }
 
-    async function addStudent(){
+    async function addDiario(){
       console.log("clicou para adicionar")
       try{
-        let req = await Services.addStudent(formData.value.name,formData.value.course,formData.value.rating)
+        let req = await Services.addDiario(formData.value.nome_turma,formData.value.nota_aluno,formData.value.student, formData.value.curso)
         if(req){
           await loadDataBase()
           editMode.value = false
@@ -88,21 +90,25 @@ export default {
       }catch(error){console.log(error)}
     }
 
-    function editStudent(student){
+    function editDiario(diario){
+      
       editMode.value = true
-      formData.value.name = student.name
-      formData.value.course = student.course
-      formData.value.rating = student.rating
-      formData.value.id = student.id
+      formData.value.nome_turma = diario.nome_turma
+      formData.value.nota_aluno = diario.nota_aluno
+      formData.value.student = diario.student
+      formData.value.curso = diario.curso
+      formData.value.id = diario.id
+     
     }
 
-    async function saveModifiedStudent(){
+    async function saveModifiedDiario(){
       try{
-        let req = await Services.editStudent(
-          formData.value.id,
-          formData.value.name,
-          formData.value.course,
-          formData.value.rating
+        let req = await Services.editDiario(
+          formData.value.nome_turma,
+          formData.value.nota_aluno,
+          formData.value.student,
+          formData.value.curso,
+          formData.value.id
         )
         if(req) await loadDataBase()
 
@@ -111,7 +117,7 @@ export default {
       }
     }
 
-    async function deleteStudent(student){
+    async function deleteDiario(student){
       try{
         await Services.deleteStudent(student.id)
       }catch(error){
@@ -126,10 +132,10 @@ export default {
       editMode,
       reset,
       cancel,
-      addStudent,
-      editStudent,
-      saveModifiedStudent,
-      deleteStudent
+      addDiario,
+      editDiario,
+      saveModifiedDiario,
+      deleteDiario
     }
   },
 };
